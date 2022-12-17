@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Christmas.Audio;
+using System.Drawing;
 
 namespace Christmas;
 internal partial class Program
@@ -177,11 +178,11 @@ internal partial class Program
             {
                 if (y - yPos == height / 2 || x - xPos == width / 2)
                 {
-                    present.Add(new Block((x, y), secondary, symbol));
+                    present.Add(new((x, y), secondary, symbol));
                 }
                 else
                 {
-                    present.Add(new Block((x, y), primary, symbol));
+                    present.Add(new((x, y), primary, symbol));
                 }
             }
         }
@@ -191,8 +192,8 @@ internal partial class Program
 
     static void GoOutside()
     {
-        Console.Clear();
-        Console.CursorVisible = false;
+        AudioEngine.Instance.PlayLoopingMusic(@"Music\YouSteppedDown.mp3");
+        ConsoleWipe();
         Random random = new();
 
         ConsoleColor[] foregroundColors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta };
@@ -216,8 +217,8 @@ internal partial class Program
         DrawMap(background);
         DrawMap(foreground);
 
-        char[] snowflakes = new[] { '+', 'x', '*', '❄', '❅', '❆' };
-        //char[] snowflakes = new[] { '+', 'x', '*' };
+        //char[] snowflakes = new[] { '+', 'x', '*', '❄', '❅', '❆' };
+        char[] snowflakes = new[] { '+', 'x', '*' };
         ConsoleColor[] foregroundSnowColors = new[] { ConsoleColor.White, ConsoleColor.Gray };
 
         while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Escape)

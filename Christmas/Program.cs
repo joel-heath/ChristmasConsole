@@ -1,4 +1,9 @@
-﻿namespace Christmas;
+﻿using System;
+using NAudio;
+using Christmas.Audio;
+using NAudio.CoreAudioApi;
+
+namespace Christmas;
 internal partial class Program
 {
     struct Point
@@ -14,6 +19,7 @@ internal partial class Program
         public static implicit operator Point((int, int) tuple) => new(tuple.Item1, tuple.Item2);
 
         public static Point operator +(Point a, Point b) => new(a.X + b.X, a.Y + b.Y);
+        public static Point operator -(Point a, Point b) => new(a.X - b.X, a.Y - b.Y);
 
         public static bool operator ==(Point a, Point b) => a.X == b.X && a.Y == b.Y;
         public static bool operator !=(Point a, Point b) => !(a == b);
@@ -22,7 +28,7 @@ internal partial class Program
         public override int GetHashCode() => HashCode.Combine(X, Y);
     }
 
-    static T RandItem<T>(T[] array) => array[Random.Shared.Next(array.Length)];
+    static T RandItem<T>(IEnumerable<T> items) => items.ElementAt(Random.Shared.Next(items.Count()));
 
     static void ConsoleWipe()
     {
@@ -131,7 +137,6 @@ internal partial class Program
 
     static int Choose(string[] options, bool escapable = true)
     {
-        //ClearKeyBuffer();
         int choice = 0;
         int indent = (Console.WindowWidth / 2) - (options.Sum(o => o.Length + 10) / 2);
         int xIndent = indent;
@@ -178,35 +183,42 @@ internal partial class Program
                 xIndent += options[i].Length + 10;
             }
 
-            switch (Console.ReadKey(true).Key)
+            bool keyPressed = false;
+            while (!keyPressed)
             {
-                case ConsoleKey.RightArrow:
-                    if (choice < options.Length - 1)
-                    {
-                        //AudioPlaybackEngine.Instance.PlaySound(menuBleep);
-                        choice++;
-                        //MainConsole.Refresh();
-                    }; break;
-                case ConsoleKey.LeftArrow:
-                    if (choice > 0)
-                    {
-                        choice--;
-                    }
-                    break;
-                case ConsoleKey.Spacebar:
-                case ConsoleKey.Enter: chosen = true; break;
-                case ConsoleKey.Escape:
-                    if (escapable)
-                    {
-                        choice = -1;
-                        chosen = true;
-                    }
-                    break;
+                keyPressed = true;
+                switch (Console.ReadKey(true).Key)
+                {
+                    case ConsoleKey.RightArrow:
+                        if (choice < options.Length - 1)
+                        {
+                            //AudioPlaybackEngine.Instance.PlaySound(menuBleep);
+                            choice++;
+                        };
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (choice > 0)
+                        {
+                            choice--;
+                        }
+                        break;
+                    case ConsoleKey.Spacebar:
+                    case ConsoleKey.Enter: chosen = true; break;
+                    case ConsoleKey.Escape:
+                        if (escapable)
+                        {
+                            choice = -1;
+                            chosen = true;
+                        }
+                        break;
+                    case ConsoleKey.F5: Console.Clear(); ViewTree(); break;
+                    default:
+                        keyPressed = false;
+                        break;
+                }
             }
-
-            Console.CursorVisible = true;
         }
-
+        //Console.CursorVisible = true;
         return choice;
     }
 
@@ -275,14 +287,16 @@ internal partial class Program
     static void TickTimer(object? state)
     {
         ViewTree();
-        Thread.Sleep(2000);
+        //Thread.Sleep(800);
     }
 
     static void Main()
     {
         //Console.OutputEncoding = System.Text.Encoding.UTF8;
-        string[] options = new string[] { "Look Outside", "Open A Present" };
-        Timer timer = new(new TimerCallback(TickTimer), null, 1000, 1000);
+        AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
+        Console.CursorVisible = false;
+        string[] options = new string[] { "Look Outside", "Open A Present", "View Tree" };
+        Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
 
         ViewTree();
         bool @continue = true;
@@ -293,12 +307,22 @@ internal partial class Program
                 case 0:
                     timer.Change(Timeout.Infinite, Timeout.Infinite);
                     GoOutside();
+                    AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
                     ViewTree();
                     timer.Change(1000, 1000);
                     break;
                 case 1:
-                    throw new NotImplementedException();
-                    //break;
+                    timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    OpenPresents();
+                    AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
+                    ViewTree();
+                    timer.Change(1000, 1000);
+                    break;
+                case 2:
+                    Console.Clear();
+                    ViewTree();
+                    Console.ReadKey();
+                    break;
                 case -1:
                     @continue = false;
                     break;
