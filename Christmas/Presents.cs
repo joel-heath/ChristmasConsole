@@ -63,16 +63,35 @@ internal partial class Program
 
         ConsoleColor d = ConsoleColor.DarkGray;
         ConsoleColor g = ConsoleColor.Gray;
+        ConsoleColor r = ConsoleColor.Red;
+        ConsoleColor b = ConsoleColor.DarkRed;
+        ConsoleColor y = ConsoleColor.Yellow;
+        ConsoleColor m = ConsoleColor.Magenta;
+        ConsoleColor p = ConsoleColor.DarkMagenta;
 
         Present[] presents = new[]
         {
             new Present("Rock", new List<Block>() {
-                new((2, 0), g, '0'), new((3, 0), d, '@'), new((4, 0), d, '@'),
-                new((1, 1), g, '#'), new((2, 1), g, '#'), new((3, 1), d, '0'), new((4, 1), g, '@'), new((5, 1), d, '#'),
+                new((1, 0), g, '0'), new((2, 0), d, '@'), new((3, 0), d, '@'),
+                new((0, 1), g, '#'), new((1, 1), g, '#'), new((2, 1), d, '0'), new((3, 1), g, '@'), new((4, 1), d, '#'),
                 new((0, 2), g, '0'), new((1, 2), g, '@'), new((2, 2), g, '@'), new((3, 2), g, '#'), new((4, 2), g, '0'), new((5, 2), d, '0'),
                 new((0, 3), d, '#'), new((1, 3), d, '0'), new((2, 3), d, '#'), new((3, 3), d, '@'), new((4, 3), g, '@'), new((5, 3), d, '0'),
                 new((1, 4), g, '@'), new((2, 4), g, '0'), new((3, 4), d, '@'), new((4, 4), g, '#'), new((5, 4), d, '#'),
-                new((2, 5), d, '@'), new((3, 5), g, '#'), new((4, 5), g, '#'), new((5, 5), d, '0')})
+                new((2, 5), d, '@'), new((3, 5), g, '#'), new((4, 5), g, '#'), new((5, 5), d, '0')}),
+
+            new Present("Sock", new List<Block>() {
+                new((3, 0), r, '0'), new((4, 0), r, '@'), new((5, 0), r, '@'),
+                new((3, 1), y, '#'), new((4, 1), y, '#'), new((5, 1), y, '0'),
+                new((3, 2), r, '0'), new((4, 2), r, '@'), new((5, 2), r, '@'),
+                new((1, 3), y, '@'), new((2, 3), y, '@'), new((3, 3), y, '#'), new((4, 3), y, '0'), new((5, 3), y, '#'),
+                new((0, 4), r, '#'), new((1, 4), r, '@'), new((2, 4), r, '0'), new((3, 4), r, '@'), new((4, 4), r, '#'), new((5, 4), r, '#'),
+                new((0, 5), y, '@'), new((1, 5), y, '#'), new((2, 5), y, '#'), new((3, 5), y, '0'), new((4, 5), y, '#')}),
+
+            new Present("pair of Swimming Trunks", new List<Block>() {
+                new((0, 0), b, '#'), new((1, 0), b, '@'), new((2, 0), b, '0'), new((3, 0), b, '@'), new((4, 0), b, '#'), new((5, 0), b, '#'),
+                new((0, 1), r, '@'), new((1, 1), r, '@'), new((2, 1), r, '#'), new((3, 1), r, '0'), new((4, 1), r, '#'), new((5, 1), r, '0'),
+                new((0, 2), m, '0'), new((1, 2), m, '@'), new((4, 2), m, '@'), new((5, 2), m, '#'),
+                new((0, 3), p, '@'), new((1, 3), p, '#'), new((4, 3), p, '#'), new((5, 3), p, '0')})
         };
 
         bool exit = false;
@@ -112,9 +131,11 @@ internal partial class Program
 
             Console.Clear();
 
+            int height = present.Item.Max(i => i.Location.Y);
+            int length = present.Item.Max(i => i.Location.X);
             foreach (Block block in present.Item)
             {
-                block.Location += (Console.WindowWidth / 2, Console.WindowHeight / 2);
+                block.Location += ((Console.WindowWidth - length) / 2, (Console.WindowHeight - height) / 2);
             }
 
             DrawMap(present.Item);
