@@ -262,7 +262,7 @@ internal partial class Program
                 stars += 2;
             }
 
-            Console.CursorLeft = Console.WindowWidth / 2 - 3;
+            Console.CursorLeft = (Console.WindowWidth - 5) / 2;
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write("###"); Console.CursorTop++; Console.CursorLeft -= 5;
             Console.ForegroundColor = ConsoleColor.DarkGray;
