@@ -52,6 +52,8 @@ internal partial class Program
             => new(Name, Item.Select(b => new Block(b.Location, b.Color, b.Character)).ToList());
     }
 
+    enum Behaviour { Neutral, Naughty, Nice };
+
     static void OpenPresents()
     {
         ConsoleWipe();
@@ -60,6 +62,8 @@ internal partial class Program
         ConsoleColor[] presentColors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta };
         HashSet<Point> shakeVectors = new() { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1) };
         // define the point to move present to, then to move it back to center
+
+        CachedSound[] boxSounds = new CachedSound[] { new(@"Sounds\BoxShake1.wav"), new(@"Sounds\BoxShake2.wav"), new(@"Sounds\BoxShake3.wav"), new(@"Sounds\BoxShake4.wav") };
 
         ConsoleColor d = ConsoleColor.DarkGray;
         ConsoleColor g = ConsoleColor.Gray;
@@ -123,14 +127,17 @@ internal partial class Program
         while (!exit)
         {
             Console.Clear();
+
             Present present;
-            if (Random.Shared.NextDouble() >= 0.99)
+            Behaviour behaviour = Random.Shared.NextDouble() < 0.99 ? Behaviour.Nice : Behaviour.Neutral;
+            if (behaviour == Behaviour.Nice)
                 present = RandItem(goodPresents).ToPresent();
             else
                 present = RandItem(presents).ToPresent();
             List<Block> box = CreateBigPresent(presentColors);
             DrawMap(box);
 
+            CachedSound sound = RandItem(boxSounds);
 
             for (int i = 0; i < Random.Shared.Next(4, 10); i++)
             {
@@ -140,6 +147,7 @@ internal partial class Program
                     break;
                 }
 
+                AudioEngine.Instance.PlaySound(sound);
                 var vector = RandItem(shakeVectors);
                 foreach (Block block in box)
                 {
@@ -171,6 +179,9 @@ internal partial class Program
 
             Console.SetCursorPosition(0, Console.WindowHeight - 2);
             Console.WriteLine($"You got a {present.Name}!");
+            if (behaviour == Behaviour.Nice)
+                AudioEngine.Instance.PlaySound(new CachedSound(@"Sounds\Fanfare.wav"));
+           
             while (!exit)
             {
                 ConsoleKey keyPress = Console.ReadKey(true).Key;

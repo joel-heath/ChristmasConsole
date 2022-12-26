@@ -2,6 +2,7 @@
 using NAudio;
 using Christmas.Audio;
 using NAudio.CoreAudioApi;
+using NAudio.Dsp;
 
 namespace Christmas;
 internal partial class Program
