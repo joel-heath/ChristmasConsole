@@ -299,6 +299,8 @@ internal partial class Program
         string[] options = new string[] { "Look Outside", "Open A Present", "View Tree" };
         Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
 
+        //var f = BiQuadFilter.LowPassFilter(44100, 1500, 1);
+
         ViewTree();
         bool @continue = true;
         while (@continue)
@@ -323,6 +325,10 @@ internal partial class Program
                     Console.Clear();
                     ViewTree();
                     Console.ReadKey();
+                    break;
+                case 3:
+                    // pause: apply lpf
+                    // https://github.com/naudio/NAudio/blob/master/NAudio.Extras/Equalizer.cs
                     break;
                 case -1:
                     @continue = false;

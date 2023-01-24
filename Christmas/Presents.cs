@@ -129,7 +129,7 @@ internal partial class Program
             Console.Clear();
 
             Present present;
-            Behaviour behaviour = Random.Shared.NextDouble() < 0.99 ? Behaviour.Nice : Behaviour.Neutral;
+            Behaviour behaviour = Random.Shared.NextDouble() > 0.99 ? Behaviour.Nice : Behaviour.Neutral;
             if (behaviour == Behaviour.Nice)
                 present = RandItem(goodPresents).ToPresent();
             else
