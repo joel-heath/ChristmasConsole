@@ -69,7 +69,7 @@ internal partial class Program
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.SetCursorPosition(xIndent, yIndent);
-                Console.WriteLine(new String('-', textBoxLength + 4));
+                Console.WriteLine(new string('-', textBoxLength + 4));
                 int centering = (textBoxLength - options[i].Length+1) / 2;
                 Console.SetCursorPosition(xIndent, yIndent + 1);
                 Console.Write("| " + new string(' ', centering));
@@ -91,9 +91,9 @@ internal partial class Program
                 Console.CursorLeft = xIndent + textBoxLength + 2;
                 Console.Write(" |");
                 Console.SetCursorPosition(xIndent, yIndent + 2);
-                Console.Write(new String('-', textBoxLength + 4));
+                Console.Write(new string('-', textBoxLength + 4));
 
-                xIndent += options[i].Length + 10;
+                xIndent = Console.CursorLeft + 4;
             }
 
             bool keyPressed = false;
@@ -127,6 +127,8 @@ internal partial class Program
                     case ConsoleKey.F5: Console.Clear(); ViewTree(); break;
                     default:
                         keyPressed = false;
+                        indent = (Console.WindowWidth / 2) - (options.Sum(o => o.Length + 10) / 2);
+                        yIndent = Console.WindowHeight - (2 + 3);
                         break;
                 }
             }
@@ -146,7 +148,7 @@ internal partial class Program
         int spaces = (totalChars - stars) / 2;
         int centering = (Console.WindowWidth - totalChars - 2) / 2;
 
-        try
+        lock (Console.ConsoleLock)
         {
             Console.SetCursorPosition((Console.WindowWidth - 1) / 2 - 1, 1);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -187,14 +189,17 @@ internal partial class Program
             Console.CursorTop++; Console.CursorLeft -= 7;
             Console.Write("#######"); Console.CursorTop++; Console.CursorLeft -= 7;
             Console.Write("#######");
+            /*
+            catch (ArgumentOutOfRangeException)
+            {
+                // user pressed arrow key while tree was being drawn
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+                return;
+            }
+            */
         }
-        catch (ArgumentOutOfRangeException)
-        {
-            // user pressed arrow key while tree was being drawn
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.Clear();
-            return;
-        }
+        Console.ForegroundColor = ConsoleColor.White;
     }
 
     static void TickTimer(object? state)

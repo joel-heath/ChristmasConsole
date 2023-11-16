@@ -1,11 +1,10 @@
-﻿using NAudio.Dsp;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
 namespace Christmas.Audio;
 class AudioEngine : IDisposable
 {
-    private readonly IWavePlayer outputDevice;
+    private readonly WaveOutEvent outputDevice;
     private readonly MixingSampleProvider mixer;
     //private LoopStream? loopingMusic;
     private ISampleProvider? loopingMusic;
@@ -13,7 +12,7 @@ class AudioEngine : IDisposable
 
     public AudioEngine(int sampleRate = 44100, int channelCount = 2)
     {
-        outputDevice = new WaveOutEvent();
+        outputDevice = new WaveOutEvent(); // { DesiredLatency = 300 };
         mixer = new(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount)) { ReadFully = true };
         outputDevice.Init(mixer);
         outputDevice.Play();
