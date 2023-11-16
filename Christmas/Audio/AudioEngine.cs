@@ -13,8 +13,6 @@ class AudioEngine : IDisposable
 
     public AudioEngine(int sampleRate = 44100, int channelCount = 2)
     {
-        var filter = BiQuadFilter.LowPassFilter(44100, 1500, 1);
-
         outputDevice = new WaveOutEvent();
         mixer = new(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount)) { ReadFully = true };
         outputDevice.Init(mixer);
@@ -89,7 +87,7 @@ class AudioEngine : IDisposable
     {
         StopLoopingMusic();
 
-        loopingMusic = new LoopStream(audioLocation).ToSampleProvider();
+        loopingMusic = new FilterStream(new LoopStream(audioLocation).ToSampleProvider(), 1000, true);
 
         loopingMixerInput = AddMixerInput(loopingMusic);
     }
@@ -102,21 +100,19 @@ class AudioEngine : IDisposable
 
     public void EnableLPF(int cutoff = 1000)
     {
-        if (loopingMusic is null) return;
-
-        loopingMusic = new FilterStream(loopingMusic, cutoff);
-        mixer.RemoveMixerInput(loopingMixerInput);
-        loopingMixerInput = AddMixerInput(loopingMusic);
+        if (loopingMusic is not FilterStream music) return;
+        music.Cutoff = cutoff;
+        music.Bypass = false;
     }
 
     public void DisableLPF()
     {
-        loopingMusic = (loopingMusic as FilterStream)?.SourceProvider;
+        if (loopingMusic is not FilterStream music) return;
 
-        if (loopingMusic is null) return;
-        
+        music.Bypass = true;
+
         mixer.RemoveMixerInput(loopingMixerInput);
-        loopingMixerInput = AddMixerInput(loopingMusic);
+        loopingMixerInput = AddMixerInput(music);
     }
 
     public static readonly AudioEngine Instance = new(44100, 2);

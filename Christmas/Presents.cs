@@ -1,5 +1,4 @@
 ﻿using Christmas.Audio;
-using System.Numerics;
 
 namespace Christmas;
 internal partial class Program

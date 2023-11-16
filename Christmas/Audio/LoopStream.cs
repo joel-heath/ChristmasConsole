@@ -1,44 +1,17 @@
-﻿using NAudio.Dsp;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 
 namespace Christmas.Audio;
-public class LoopStream : WaveStream
+public class LoopStream(WaveStream sourceStream) : WaveStream
 {
-    WaveStream sourceStream;
+    private readonly WaveStream sourceStream = sourceStream;
 
-    public LoopStream(string fileName) : this(new AudioFileReader(fileName))
-    {
+    public LoopStream(string fileName) : this(new AudioFileReader(fileName)) { }
 
-    }
+    public bool EnableLooping { get; set; } = true;
 
-    /// Creates a new Loop stream
-    public LoopStream(WaveStream sourceStream)
-    {
-        this.sourceStream = sourceStream;
-        EnableLooping = true;
-    }
-
-    /// Use this to turn looping on or off
-    public bool EnableLooping { get; set; }
-
-    /// Return source stream's wave format
-    public override WaveFormat WaveFormat
-    {
-        get { return sourceStream.WaveFormat; }
-    }
-
-    /// LoopStream simply returns
-    public override long Length
-    {
-        get { return sourceStream.Length; }
-    }
-
-    /// LoopStream simply passes on positioning to source stream
-    public override long Position
-    {
-        get { return sourceStream.Position; }
-        set { sourceStream.Position = value; }
-    }
+    public override WaveFormat WaveFormat => sourceStream.WaveFormat;
+    public override long Length => sourceStream.Length;
+    public override long Position { get => sourceStream.Position; set => sourceStream.Position = value; }
 
     public override int Read(byte[] buffer, int offset, int count)
     {
@@ -49,13 +22,8 @@ public class LoopStream : WaveStream
             int bytesRead = sourceStream.Read(buffer, offset + totalBytesRead, count - totalBytesRead);
             if (bytesRead == 0)
             {
-                if (sourceStream.Position == 0 || !EnableLooping)
-                {
-                    // something wrong with the source stream
-                    break;
-                }
-                // loop
-                sourceStream.Position = 0;
+                if (sourceStream.Position == 0 || !EnableLooping) break; // something wrong with the source stream
+                sourceStream.Position = 0; // loop
             }
             totalBytesRead += bytesRead;
         }
@@ -64,31 +32,7 @@ public class LoopStream : WaveStream
 
     protected override void Dispose(bool disposing)
     {
-        this.sourceStream.Dispose();
+        sourceStream.Dispose();
         base.Dispose(disposing);
-    }
-}
-
-class FilterStream : ISampleProvider
-{
-    public ISampleProvider SourceProvider { get; }
-    private BiQuadFilter filter;
-
-    public FilterStream(ISampleProvider sourceProvider, int cutOffFreq)
-    {
-        SourceProvider = sourceProvider;
-        filter = BiQuadFilter.LowPassFilter(44100, cutOffFreq, 2);
-    }
-
-    public WaveFormat WaveFormat { get => SourceProvider.WaveFormat; }
-
-    public int Read(float[] buffer, int offset, int count)
-    {
-        int samplesRead = SourceProvider.Read(buffer, offset, count);
-
-        for (int i = 0; i < samplesRead; i++)
-            buffer[offset + i] = filter.Transform(buffer[offset + i]);
-
-        return samplesRead;
     }
 }

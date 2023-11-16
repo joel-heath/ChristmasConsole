@@ -211,8 +211,6 @@ internal partial class Program
         string[] options = ["Look Outside", "Open A Present", "View Tree", "Pause"];
         Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
 
-        //var f = BiQuadFilter.LowPassFilter(44100, 1500, 1);
-
         ViewTree();
         bool @continue = true;
         while (@continue)
