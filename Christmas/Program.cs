@@ -1,21 +1,11 @@
-﻿using System;
-using NAudio;
-using Christmas.Audio;
-using NAudio.CoreAudioApi;
-using NAudio.Dsp;
+﻿using Christmas.Audio;
 
 namespace Christmas;
 internal partial class Program
 {
-    struct Point
+    struct Point(int x, int y)
     {
-        public int X, Y;
-
-        public Point(int x, int y)
-        {
-            this.X = x;
-            this.Y = y;
-        }
+        public int X = x, Y = y;
 
         public static implicit operator Point((int, int) tuple) => new(tuple.Item1, tuple.Item2);
 
@@ -25,8 +15,8 @@ internal partial class Program
         public static bool operator ==(Point a, Point b) => a.X == b.X && a.Y == b.Y;
         public static bool operator !=(Point a, Point b) => !(a == b);
 
-        public override bool Equals(object? obj) => obj is Point p && p.X.Equals(X) && p.Y.Equals(Y);
-        public override int GetHashCode() => HashCode.Combine(X, Y);
+        public override readonly bool Equals(object? obj) => obj is Point p && p.X.Equals(X) && p.Y.Equals(Y);
+        public override readonly int GetHashCode() => HashCode.Combine(X, Y);
     }
 
     static T RandItem<T>(IEnumerable<T> items) => items.ElementAt(Random.Shared.Next(items.Count()));
@@ -57,84 +47,6 @@ internal partial class Program
             }
         }
     }
-
-    /*
-    static int Choose(string[] options, bool escapable = true)
-    {
-        //ClearKeyBuffer();
-        int choice = 0;
-        int indent = (Console.WindowWidth / 2) - (options.Sum(o => o.Length + 10) / 2);
-        int xIndent = indent;
-        int yIndent = Console.WindowHeight - (3 + 3);
-        bool chosen = false;
-        while (!chosen)
-        {
-            Console.CursorVisible = false;
-            xIndent = indent;
-
-            // write all options with current selected highlighted
-            for (int i = 0; i < options.Length; i++)
-            {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.SetCursorPosition(xIndent, yIndent);
-                Console.WriteLine(new String('-', options[i].Length + 4));
-                Console.SetCursorPosition(xIndent, yIndent + 1);
-                Console.Write("| ");
-                if (choice == i)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                }
-                else
-                {
-                    //Console.ForegroundColor = options[i].Color;
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                //Console.Write(options[i].Contents);
-                Console.Write(options[i]);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
-
-                Console.WriteLine(" |");
-                Console.SetCursorPosition(xIndent, yIndent + 2);
-                Console.Write(new String('-', options[i].Length + 4));
-
-                xIndent += options[i].Length + 10;
-            }
-
-            switch (Console.ReadKey(true).Key)
-            {
-                case ConsoleKey.RightArrow:
-                    if (choice < options.Length - 1)
-                    {
-                        //AudioPlaybackEngine.Instance.PlaySound(menuBleep);
-                        choice++;
-                        //MainConsole.Refresh();
-                    }; break;
-                case ConsoleKey.LeftArrow:
-                    if (choice > 0)
-                    {
-                        choice--;
-                    }
-                    break;
-                case ConsoleKey.Spacebar:
-                case ConsoleKey.Enter: chosen = true; break;
-                case ConsoleKey.Escape:
-                    if (escapable)
-                    {
-                        choice = -1;
-                        chosen = true;
-                    }
-                    break;
-            }
-
-            Console.CursorVisible = true;
-        }
-
-        return choice;
-    }
-    */
 
     static int Choose(string[] options, bool escapable = true)
     {
@@ -225,8 +137,8 @@ internal partial class Program
 
     static void ViewTree()
     {
-        ConsoleColor[] TreeColors = { ConsoleColor.Green, ConsoleColor.DarkGreen };
-        ConsoleColor[] OrnamentColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.Cyan };
+        ConsoleColor[] TreeColors = [ConsoleColor.Green, ConsoleColor.DarkGreen];
+        ConsoleColor[] OrnamentColors = [ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.Cyan];
 
         int rows = 18;
         int totalChars = rows * 2 - 1;
@@ -276,7 +188,7 @@ internal partial class Program
             Console.Write("#######"); Console.CursorTop++; Console.CursorLeft -= 7;
             Console.Write("#######");
         }
-        catch (System.ArgumentOutOfRangeException)
+        catch (ArgumentOutOfRangeException)
         {
             // user pressed arrow key while tree was being drawn
             Console.BackgroundColor = ConsoleColor.Black;
@@ -296,7 +208,7 @@ internal partial class Program
         //Console.OutputEncoding = System.Text.Encoding.UTF8;
         AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
         Console.CursorVisible = false;
-        string[] options = new string[] { "Look Outside", "Open A Present", "View Tree" };
+        string[] options = ["Look Outside", "Open A Present", "View Tree", "Pause"];
         Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
 
         //var f = BiQuadFilter.LowPassFilter(44100, 1500, 1);
@@ -327,7 +239,9 @@ internal partial class Program
                     Console.ReadKey();
                     break;
                 case 3:
-                    // pause: apply lpf
+                    AudioEngine.Instance.EnableLPF();
+                    Console.ReadKey();
+                    AudioEngine.Instance.DisableLPF();
                     // https://github.com/naudio/NAudio/blob/master/NAudio.Extras/Equalizer.cs
                     break;
                 case -1:

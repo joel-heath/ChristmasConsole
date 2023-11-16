@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Dsp;
+using NAudio.Wave;
 
 namespace Christmas.Audio;
 public class LoopStream : WaveStream
@@ -65,5 +66,29 @@ public class LoopStream : WaveStream
     {
         this.sourceStream.Dispose();
         base.Dispose(disposing);
+    }
+}
+
+class FilterStream : ISampleProvider
+{
+    public ISampleProvider SourceProvider { get; }
+    private BiQuadFilter filter;
+
+    public FilterStream(ISampleProvider sourceProvider, int cutOffFreq)
+    {
+        SourceProvider = sourceProvider;
+        filter = BiQuadFilter.LowPassFilter(44100, cutOffFreq, 2);
+    }
+
+    public WaveFormat WaveFormat { get => SourceProvider.WaveFormat; }
+
+    public int Read(float[] buffer, int offset, int count)
+    {
+        int samplesRead = SourceProvider.Read(buffer, offset, count);
+
+        for (int i = 0; i < samplesRead; i++)
+            buffer[offset + i] = filter.Transform(buffer[offset + i]);
+
+        return samplesRead;
     }
 }
