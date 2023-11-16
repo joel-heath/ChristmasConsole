@@ -239,11 +239,11 @@ internal partial class Program
                 case 2:
                     Console.Clear();
                     ViewTree();
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     break;
                 case 3:
                     AudioEngine.Instance.EnableLPF();
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     AudioEngine.Instance.DisableLPF();
                     // https://github.com/naudio/NAudio/blob/master/NAudio.Extras/Equalizer.cs
                     break;
