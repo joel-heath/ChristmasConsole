@@ -1,15 +1,10 @@
 ﻿using NAudio.Wave;
 
 namespace Christmas.Audio;
-class AutoDisposeFileReader : ISampleProvider
+class AutoDisposeFileReader(AudioFileReader reader) : ISampleProvider
 {
-    private readonly AudioFileReader reader;
+    private readonly AudioFileReader reader = reader;
     private bool isDisposed;
-    public AutoDisposeFileReader(AudioFileReader reader)
-    {
-        this.reader = reader;
-        this.WaveFormat = reader.WaveFormat;
-    }
 
     public int Read(float[] buffer, int offset, int count)
     {
@@ -24,5 +19,5 @@ class AutoDisposeFileReader : ISampleProvider
         return read;
     }
 
-    public WaveFormat WaveFormat { get; private set; }
+    public WaveFormat WaveFormat { get; private set; } = reader.WaveFormat;
 }

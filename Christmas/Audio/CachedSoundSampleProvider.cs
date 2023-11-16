@@ -1,15 +1,10 @@
 ﻿using NAudio.Wave;
 
 namespace Christmas.Audio;
-class CachedSoundSampleProvider : ISampleProvider
+class CachedSoundSampleProvider(CachedSound cachedSound) : ISampleProvider
 {
-    private readonly CachedSound cachedSound;
+    private readonly CachedSound cachedSound = cachedSound;
     private long position;
-
-    public CachedSoundSampleProvider(CachedSound cachedSound)
-    {
-        this.cachedSound = cachedSound;
-    }
 
     public int Read(float[] buffer, int offset, int count)
     {
@@ -20,5 +15,5 @@ class CachedSoundSampleProvider : ISampleProvider
         return (int)samplesToCopy;
     }
 
-    public WaveFormat WaveFormat { get { return cachedSound.WaveFormat; } }
+    public WaveFormat WaveFormat => cachedSound.WaveFormat;
 }

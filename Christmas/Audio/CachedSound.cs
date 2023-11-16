@@ -17,6 +17,6 @@ class CachedSound
         {
             wholeFile.AddRange(readBuffer.Take(samplesRead));
         }
-        AudioData = wholeFile.ToArray();
+        AudioData = [.. wholeFile];
     }
 }

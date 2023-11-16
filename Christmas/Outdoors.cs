@@ -1,45 +1,28 @@
 ﻿using Christmas.Audio;
-using System.Drawing;
 
 namespace Christmas;
 internal partial class Program
 {
-    class Snow
+    class Snow(Point location, ConsoleColor color, char character, int velocity)
     {
-        public Point Location;
-        public ConsoleColor Color;
-        public char Character;
-        public int Velocity; // inverse (1/velocity)
-        public int Timer;
-
-        public Snow(Point location, ConsoleColor color, char character, int velocity)
-        {
-            this.Location = location;
-            this.Color = color;
-            this.Character = character;
-            this.Velocity = velocity;
-            this.Timer = 0;
-        }
+        public Point Location = location;
+        public ConsoleColor Color = color;
+        public char Character = character;
+        public int Velocity = velocity; // inverse (1/velocity)
+        public int Timer = 0;
     }
-    class Block
+    class Block(Point location, ConsoleColor color, char character)
     {
-        public Point Location;
-        public ConsoleColor Color;
-        public char Character;
-
-        public Block(Point location, ConsoleColor color, char character)
-        {
-            this.Location = location;
-            this.Color = color;
-            this.Character = character;
-        }
+        public Point Location = location;
+        public ConsoleColor Color = color;
+        public char Character = character;
 
         public static explicit operator Block(Snow s) => new(s.Location, s.Color, s.Character);
     }
 
     static Snow MoveSnow(List<Block> map, Snow snow)
     {
-        Point[] vectors = { (0, 1), (-1, 1), (1, 1) };
+        Point[] vectors = [(0, 1), (-1, 1), (1, 1)];
 
         foreach (Point vector in vectors)
         {
@@ -66,7 +49,7 @@ internal partial class Program
 
     static void DrawForegroundSnow(List<Block> map, List<Snow> snowflakes, List<Block> background, char[] symbols)
     {
-        List<Snow> toRemove = new();
+        List<Snow> toRemove = [];
 
         for (int i = 0; i < snowflakes.Count; i++)
         {
@@ -105,7 +88,7 @@ internal partial class Program
 
     static void DrawBackgroundSnow(List<Block> map, List<Snow> snowflakes, List<Block> foreground, char[] symbols)
     {
-        List<int> toRemove = new();
+        List<int> toRemove = [];
 
         for (int i = 0; i < snowflakes.Count; i++)
         {
@@ -141,7 +124,7 @@ internal partial class Program
             }
         }
 
-        toRemove = toRemove.Order().ToList();
+        toRemove = [.. toRemove.Order()];
 
         for (int i = 0; i < toRemove.Count; i++)
         {
@@ -162,7 +145,7 @@ internal partial class Program
     static List<Block> CreatePresent(ConsoleColor[] colors)
     {
         char symbol = '#';
-        List<Block> present = new();
+        List<Block> present = [];
         Random random = new();
 
         // make sure lengths and widths are odd so there is a centre
@@ -198,30 +181,30 @@ internal partial class Program
         ConsoleWipe();
         Random random = new();
 
-        ConsoleColor[] foregroundColors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta };
-        ConsoleColor[] backgroundColors = new[] { ConsoleColor.DarkRed, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.DarkYellow, ConsoleColor.DarkMagenta };
+        ConsoleColor[] foregroundColors = [ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta];
+        ConsoleColor[] backgroundColors = [ConsoleColor.DarkRed, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.DarkYellow, ConsoleColor.DarkMagenta];
 
-        List<Block> foreground = new();
+        List<Block> foreground = [];
         for (int i = 0; i < random.Next(4, 9); i++)
         {
             foreground.AddRange(CreatePresent(foregroundColors));
         }
 
-        List<Block> background = new();
+        List<Block> background = [];
         for (int i = 0; i < random.Next(4, 9); i++)
         {
             background.AddRange(CreatePresent(backgroundColors));
         }
 
-        List<Snow> foregroundSnow = new();
-        List<Snow> backgroundSnow = new();
+        List<Snow> foregroundSnow = [];
+        List<Snow> backgroundSnow = [];
 
         DrawMap(background);
         DrawMap(foreground);
 
         //char[] snowflakes = new[] { '+', 'x', '*', '❄', '❅', '❆' };
-        char[] snowflakes = new[] { '+', 'x', '*' };
-        ConsoleColor[] foregroundSnowColors = new[] { ConsoleColor.White, ConsoleColor.Gray };
+        char[] snowflakes = ['+', 'x', '*'];
+        ConsoleColor[] foregroundSnowColors = [ConsoleColor.White, ConsoleColor.Gray];
 
         while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Escape)
         {
