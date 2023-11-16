@@ -141,9 +141,11 @@ internal partial class Program
             }
         }
 
-        foreach (int index in toRemove)
+        toRemove = toRemove.Order().ToList();
+
+        for (int i = 0; i < toRemove.Count; i++)
         {
-            snowflakes.RemoveAt(index);
+            snowflakes.RemoveAt(toRemove[i] - i);
         }
     }
 
