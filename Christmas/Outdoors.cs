@@ -177,7 +177,7 @@ internal partial class Program
 
     static void GoOutside()
     {
-        AudioEngine.Instance.PlayLoopingMusic(@"Music\YouSteppedDown.mp3");
+        AudioEngine.Instance.PlayLoopingMusic(@"Music/YouSteppedDown.mp3");
         ConsoleWipe();
         Random random = new();
 

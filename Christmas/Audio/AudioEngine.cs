@@ -4,16 +4,14 @@ using NAudio.Wave.SampleProviders;
 namespace Christmas.Audio;
 class AudioEngine : IDisposable
 {
-    //private readonly WaveOutEvent outputDevice;
-    private readonly DirectSoundOut outputDevice;
+    private readonly WaveOutEvent outputDevice;
     private readonly MixingSampleProvider mixer;
     private ISampleProvider? loopingMusic;
     private ISampleProvider? loopingMixerInput;
 
     public AudioEngine(int sampleRate = 44100, int channelCount = 2)
     {
-        //outputDevice = new WaveOutEvent(); // { DesiredLatency = 300 };
-        outputDevice = new DirectSoundOut();
+        outputDevice = new WaveOutEvent(); // { DesiredLatency = 300 };
         mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount)) { ReadFully = true };
         outputDevice.Init(mixer);
         outputDevice.Play();

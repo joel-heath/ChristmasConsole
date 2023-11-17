@@ -13,34 +13,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NAudio.Core" Version="2.2.1" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NLayer" Version="1.14.0" />
     <PackageReference Include="NLayer.NAudioSupport" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Music\InTheBleakMidwinter.wav">
+    <None Update="Music/InTheBleakMidwinter.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Music\JoyToTheWorld.wav">
+    <None Update="Music/JoyToTheWorld.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Music\YouSteppedDown.wav">
+    <None Update="Music/YouSteppedDown.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sounds\BoxShake1.wav">
+    <None Update="Sounds/BoxShake1.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sounds\BoxShake2.wav">
+    <None Update="Sounds/BoxShake2.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sounds\BoxShake3.wav">
+    <None Update="Sounds/BoxShake3.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sounds\BoxShake4.wav">
+    <None Update="Sounds/BoxShake4.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sounds\Fanfare.wav">
+    <None Update="Sounds/Fanfare.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

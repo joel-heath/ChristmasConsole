@@ -1,11 +1,12 @@
 ﻿using NAudio.Wave;
+using NLayer.NAudioSupport;
 
 namespace Christmas.Audio;
 public class LoopStream(WaveStream sourceStream) : WaveStream
 {
     private readonly WaveStream sourceStream = sourceStream;
 
-    public LoopStream(string fileName) : this(new WaveFileReader(fileName)) { } //: this(new ManagedMpegStream(fileName)) { }
+    public LoopStream(string fileName) : this(new ManagedMpegStream(fileName)) { }
 
     public bool EnableLooping { get; set; } = true;
 

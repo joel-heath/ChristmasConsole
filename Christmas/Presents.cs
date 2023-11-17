@@ -53,13 +53,13 @@ internal partial class Program
     static void OpenPresents()
     {
         ConsoleWipe();
-        AudioEngine.Instance.PlayLoopingMusic(@"Music\JoyToTheWorld.wav");
+        AudioEngine.Instance.PlayLoopingMusic(@"Music/JoyToTheWorld.mp3");
 
         ConsoleColor[] presentColors = [ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta];
         HashSet<Point> shakeVectors = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1)];
         // define the point to move present to, then to move it back to center
 
-        CachedWave[] boxSounds = [new(@"Sounds\BoxShake1.wav"), new(@"Sounds\BoxShake2.wav"), new(@"Sounds\BoxShake3.wav"), new(@"Sounds\BoxShake4.wav")];
+        CachedWave[] boxSounds = [new(@"Sounds/BoxShake1.wav"), new(@"Sounds/BoxShake2.wav"), new(@"Sounds/BoxShake3.wav"), new(@"Sounds/BoxShake4.wav")];
 
         ConsoleColor d = ConsoleColor.DarkGray;
         ConsoleColor g = ConsoleColor.Gray;
@@ -181,7 +181,7 @@ internal partial class Program
             Console.WriteLine($"You got a {present.Name}!");
             var time = DateTime.Now;
             if (behaviour == Behaviour.Nice)
-                AudioEngine.Instance.PlaySound(new CachedWave(@"Sounds\Fanfare.wav"));
+                AudioEngine.Instance.PlaySound(new CachedWave(@"Sounds/Fanfare.wav"));
            
             while (!exit)
             {

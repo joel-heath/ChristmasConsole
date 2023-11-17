@@ -211,7 +211,7 @@ internal partial class Program
     static void Main()
     {
         //Console.OutputEncoding = System.Text.Encoding.UTF8;
-        AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.wav");
+        AudioEngine.Instance.PlayLoopingMusic(@"Music/InTheBleakMidwinter.mp3");
         Console.CursorVisible = false;
         string[] options = ["Look Outside", "Open A Present", "View Tree", "Pause"];
         Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
@@ -225,14 +225,14 @@ internal partial class Program
                 case 0:
                     timer.Change(Timeout.Infinite, Timeout.Infinite);
                     GoOutside();
-                    AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
+                    AudioEngine.Instance.PlayLoopingMusic(@"Music/InTheBleakMidwinter.mp3");
                     ViewTree();
                     timer.Change(1000, 1000);
                     break;
                 case 1:
                     timer.Change(Timeout.Infinite, Timeout.Infinite);
                     OpenPresents();
-                    AudioEngine.Instance.PlayLoopingMusic(@"Music\InTheBleakMidwinter.mp3");
+                    AudioEngine.Instance.PlayLoopingMusic(@"Music/InTheBleakMidwinter.mp3");
                     ViewTree();
                     timer.Change(1000, 1000);
                     break;
