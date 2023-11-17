@@ -53,7 +53,7 @@ internal partial class Program
     static void OpenPresents()
     {
         ConsoleWipe();
-        AudioEngine.Instance.PlayLoopingMusic(@"Music\JoyToTheWorld.mp3");
+        AudioEngine.Instance.PlayLoopingMusic(@"Music\JoyToTheWorld.wav");
 
         ConsoleColor[] presentColors = [ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta];
         HashSet<Point> shakeVectors = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1)];

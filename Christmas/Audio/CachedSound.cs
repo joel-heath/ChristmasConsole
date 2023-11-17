@@ -7,13 +7,13 @@ class CachedSound
     public WaveFormat WaveFormat { get; private set; }
     public CachedSound(string audioFileName)
     {
-        using var audioFileReader = new AudioFileReader(audioFileName);
+        using var waveFileReader = new WaveFileReader(audioFileName);
         // TODO: could add resampling in here if required
-        WaveFormat = audioFileReader.WaveFormat;
-        var wholeFile = new List<float>((int)(audioFileReader.Length / 4));
-        var readBuffer = new float[audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels];
+        WaveFormat = waveFileReader.WaveFormat;
+        var wholeFile = new List<byte>((int)(waveFileReader.Length / 4));
+        var readBuffer = new byte[waveFileReader.WaveFormat.SampleRate * waveFileReader.WaveFormat.Channels];
         int samplesRead;
-        while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+        while ((samplesRead = waveFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
         {
             wholeFile.AddRange(readBuffer.Take(samplesRead));
         }
