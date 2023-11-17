@@ -1,11 +1,12 @@
 ﻿using NAudio.Wave;
 
 namespace Christmas.Audio;
-class CachedSound
+class CachedWave
 {
-    public float[] AudioData { get; private set; }
+    public byte[] AudioData { get; private set; }
     public WaveFormat WaveFormat { get; private set; }
-    public CachedSound(string audioFileName)
+    public long Length { get; private set; }
+    public CachedWave(string audioFileName)
     {
         using var waveFileReader = new WaveFileReader(audioFileName);
         // TODO: could add resampling in here if required

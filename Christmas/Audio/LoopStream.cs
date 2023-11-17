@@ -1,5 +1,4 @@
 ﻿using NAudio.Wave;
-using NLayer.NAudioSupport;
 
 namespace Christmas.Audio;
 public class LoopStream(WaveStream sourceStream) : WaveStream

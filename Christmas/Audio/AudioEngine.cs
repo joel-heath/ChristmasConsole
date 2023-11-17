@@ -32,9 +32,9 @@ class AudioEngine : IDisposable
         throw new NotImplementedException("Not yet implemented this channel count conversion");
     }
 
-    public void PlaySound(CachedSound sound, bool wait = false)
+    public void PlaySound(CachedWave sound, bool wait = false)
     {
-        var input = AddMixerInput(new CachedSoundSampleProvider(sound));
+        var input = AddMixerInput(new CachedWaveStream(sound).ToSampleProvider());
         if (wait)
         {
             while (mixer.MixerInputs.Contains(input))

@@ -19,19 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Music\InTheBleakMidwinter.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Music\InTheBleakMidwinter.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Music\JoyToTheWorld.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Music\JoyToTheWorld.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Music\YouSteppedDown.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Music\YouSteppedDown.wav">
