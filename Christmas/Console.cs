@@ -96,6 +96,7 @@ internal static class Console
     }
 
     public static ConsoleKeyInfo ReadKey(bool intercept = false) => System.Console.ReadKey(intercept);
+    public static string? ReadLine() => System.Console.ReadLine();
 
     public static void ClearKeyBuffer()
     {

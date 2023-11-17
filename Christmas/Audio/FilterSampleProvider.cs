@@ -3,7 +3,7 @@ using NAudio.Wave;
 
 namespace Christmas.Audio;
 
-class FilterStream(ISampleProvider sourceProvider, int cutoff, bool bypass = false) : ISampleProvider
+class FilterSampleProvider(ISampleProvider sourceProvider, int cutoff, bool bypass = false) : ISampleProvider
 {
     private readonly ISampleProvider sourceProvider = sourceProvider;
     private readonly BiQuadFilter filter = BiQuadFilter.LowPassFilter(44100, cutoff, 2);

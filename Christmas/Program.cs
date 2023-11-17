@@ -211,9 +211,11 @@ internal partial class Program
     static void Main()
     {
         //Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.Clear();
         AudioEngine.Instance.PlayLoopingMusic(@"Music/InTheBleakMidwinter.mp3");
         Console.CursorVisible = false;
         string[] options = ["Look Outside", "Open A Present", "View Tree", "Pause"];
+        string[] settings = ["Music Volume", "Sounds Volume"];
         Timer timer = new(new TimerCallback(TickTimer), null, 1000, 800);
 
         ViewTree();
@@ -243,7 +245,35 @@ internal partial class Program
                     break;
                 case 3:
                     AudioEngine.Instance.EnableLPF();
-                    Console.ReadKey(true);
+                    Console.Clear();
+                    ViewTree();
+                    var choice = Choose(settings);
+                    if (choice > -1)
+                    {
+                        timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        Console.Clear();
+                        Console.Write("Enter new volume (0-1): ");
+                        Console.CursorVisible = true;
+
+                        float volume = -1;
+                        while (volume < 0)
+                        {
+                            try
+                            {
+                                volume = Math.Max(Math.Min(float.Parse(Console.ReadLine() ?? "1"), 5), 0);
+                            }
+                            catch { }
+                        }
+                        Console.CursorVisible = false;
+
+                        if (choice == 0)
+                            AudioEngine.Instance.MusicVolume = volume;
+                        else
+                            AudioEngine.Instance.SoundsVolume = volume;
+                    }
+                    Console.Clear();
+                    ViewTree();
+                    timer.Change(1000, 1000);
                     AudioEngine.Instance.DisableLPF();
                     // https://github.com/naudio/NAudio/blob/master/NAudio.Extras/Equalizer.cs
                     break;

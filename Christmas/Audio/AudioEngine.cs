@@ -1,14 +1,33 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Christmas.Audio;
+public class MusicNotPlayingException : Exception { }
 class AudioEngine : IDisposable
 {
     private readonly WaveOutEvent outputDevice;
     private readonly MixingSampleProvider mixer;
-    private ISampleProvider? loopingMusic;
-    private ISampleProvider? loopingMixerInput;
 
+    private WaveStream? sourceStream;
+    private ISampleProvider? filter;
+    private VolumeSampleProvider? loopingMixerInput;
+
+    private float musicVolume = 1;
+
+    public float MusicVolume
+    {
+        get => musicVolume;
+        set
+        {
+            musicVolume = value;
+            if (loopingMixerInput is not null)
+            {
+                loopingMixerInput.Volume = value;
+            }
+        }
+    }
+    public float SoundsVolume { get; set; } = 1;
     public AudioEngine(int sampleRate = 44100, int channelCount = 2)
     {
         outputDevice = new WaveOutEvent(); // { DesiredLatency = 300 };
@@ -17,7 +36,7 @@ class AudioEngine : IDisposable
         outputDevice.Play();
     }
 
-    private ISampleProvider ConvertToRightChannelCount(ISampleProvider input)
+    private ISampleProvider ConvertToStereo(ISampleProvider input)
     {
         if (input.WaveFormat.Channels == mixer.WaveFormat.Channels)
         {
@@ -32,7 +51,8 @@ class AudioEngine : IDisposable
 
     public void PlaySound(CachedWave sound, bool wait = false)
     {
-        var input = AddMixerInput(new CachedWaveStream(sound).ToSampleProvider());
+        var input = ConvertToStereo(new VolumeSampleProvider(new CachedWaveStream(sound).ToSampleProvider(), SoundsVolume));
+        AddMixerInput(input);
         if (wait)
         {
             while (mixer.MixerInputs.Contains(input))
@@ -42,11 +62,9 @@ class AudioEngine : IDisposable
         }
     }
 
-    private ISampleProvider AddMixerInput(ISampleProvider input)
+    private void AddMixerInput(ISampleProvider input)
     {
-        var mixerInput = ConvertToRightChannelCount(input);
-        mixer.AddMixerInput(mixerInput);
-        return mixerInput;
+        mixer.AddMixerInput(input);
     }
 
     public void Dispose()
@@ -60,8 +78,8 @@ class AudioEngine : IDisposable
         {
             mixer.RemoveMixerInput(loopingMixerInput);
             loopingMixerInput = null;
-            //loopingMusic?.Dispose();
-            loopingMusic = null;
+            sourceStream?.Dispose();
+            filter = null;
         }
     }
 
@@ -84,10 +102,10 @@ class AudioEngine : IDisposable
     public void PlayLoopingMusic(string audioLocation)
     {
         StopLoopingMusic();
-
-        loopingMusic = new FilterStream(new LoopStream(audioLocation).ToSampleProvider(), 1000, true);
-
-        loopingMixerInput = AddMixerInput(loopingMusic);
+        sourceStream = new LoopStream(audioLocation);
+        filter = new FilterSampleProvider(sourceStream.ToSampleProvider(), 1000, true);
+        loopingMixerInput = new VolumeSampleProvider(filter, musicVolume);
+        AddMixerInput(loopingMixerInput);
     }
 
     public void StopAllSounds()
@@ -98,19 +116,15 @@ class AudioEngine : IDisposable
 
     public void EnableLPF(int cutoff = 1000)
     {
-        if (loopingMusic is not FilterStream music) return;
+        if (filter is not FilterSampleProvider music) return;
         music.Cutoff = cutoff;
         music.Bypass = false;
     }
 
     public void DisableLPF()
     {
-        if (loopingMusic is not FilterStream music) return;
-
+        if (filter is not FilterSampleProvider music) return;
         music.Bypass = true;
-
-        mixer.RemoveMixerInput(loopingMixerInput);
-        loopingMixerInput = AddMixerInput(music);
     }
 
     public static readonly AudioEngine Instance = new(44100, 2);
